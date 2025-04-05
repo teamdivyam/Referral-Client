@@ -1,0 +1,33 @@
+/* From Uiverse.io by alexmaracinaru */ 
+.animate-button-1 {
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.2s;
+    padding: 10px 20px;
+    border-radius: 100px;
+    /* background: #cfef00; */
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+}
+
+/* .animate-button-1:hover {
+background: #c4e201;
+} */
+
+.animate-button-1 > svg {
+width: 34px;
+margin-left: 10px;
+transition: transform 0.3s ease-in-out;
+}
+
+.animate-button-1:hover svg {
+transform: translateX(5px);
+}
+
+.animate-button-1:active {
+transform: scale(0.95);
+}
+  
