@@ -50,7 +50,7 @@ const data = {
           sidebar: true,
           title: "Request Withdrawal",
           url: "/wallet/request-withdrawal",
-        }
+        },
       ],
     },
     {
@@ -106,7 +106,7 @@ const data = {
 };
 
 const ProtectedRoute = () => {
-  const { isAuthenticated, isLoading, logout } = useAuth();
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
   const [currentPage, setCurrentPage] = useState(0);
   const [subCurrentPage, setSubCurrentPage] = useState(0);
 
@@ -153,11 +153,15 @@ const ProtectedRoute = () => {
             </Breadcrumb>
             <div className="flex items-center gap-4.5 pr-2.5 lg:gap-8 lg:pr-4">
               <Link
-                to="/settings/notification"
+                to="/settings/notifications"
                 className="relative cursor-pointer"
               >
                 <Bell size={25} color="gray" />
-                <div className="absolute size-2 bg-green-500 rounded-full top-0 right-1 -z-10"></div>
+                {user.unreadNotificationCount !== 0 && (
+                  <div className="absolute flex justify-center items-center size-5 bg-purple-500 text-white border border-white rounded-full text-xs -top-1.5 -right-1 z-10">
+                    {user.unreadNotificationCount}
+                  </div>
+                )}
               </Link>
               <ProfileDropdownMenu
                 data={data}

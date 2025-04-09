@@ -14,7 +14,7 @@ export default defineConfig({
   server: {
     host: "0.0.0.0",
     port: 5173,
-    // historyApiFallback: true, // Tells Vite to fallback to index.html for SPA
+    historyApiFallback: true, // Tells Vite to fallback to index.html for SPA
   },
   build: {
     rollupOptions: {

@@ -28,7 +28,6 @@ export default function Overview() {
   const { user } = useAuth();
   const { data, error, isLoading } = useAxiosGet(agentService.getOverview);
 
-  console.log(Card, CardContent, CardTitle, CardHeader);
 
   const referralAnalytics = [
     {
@@ -37,15 +36,19 @@ export default function Overview() {
     },
     {
       title: "Total Earnings",
-      value: data?.wallet.totalEarnings,
+      value: user.totalEarningAmount,
+    },
+    {
+      title: "Total Withdrawal",
+      value: user.totalWithdrawalAmount,
+    },
+    {
+      title: "Balance",
+      value: user.currentWithdrawalAmount,
     },
     {
       title: "Pending Balance",
-      value: data?.wallet.pendingBalance,
-    },
-    {
-      title: "Withdrawal Amount",
-      value: data?.wallet.withdrawalAmount,
+      value: user.pendingBalance,
     },
   ];
 
@@ -211,7 +214,7 @@ export default function Overview() {
                           <div className="flex justify-end">
                             <RWebShare
                               data={{
-                                text: "Hello Boss!",
+                                text: "Divyam Referral Code",
                                 url: "https://divyam.com",
                                 title: "Divyam Pvt Ltd",
                               }}

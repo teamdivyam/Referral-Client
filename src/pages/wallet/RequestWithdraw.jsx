@@ -1,17 +1,19 @@
+import Joi from "joi";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { joiResolver } from "@hookform/resolvers/joi";
+
+import useAuth from "../../hooks/useAuth";
+import agentService from "../../services/agent.service";
+import { useAxiosPost } from "../../hooks/useAxios";
+
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { IndianRupee } from "lucide-react";
-import useAuth from "../../hooks/useAuth";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { joiResolver } from "@hookform/resolvers/joi";
-import Joi from "joi";
-import { useAxiosPost } from "../../hooks/useAxios";
-import agentService from "../../services/agent.service";
-import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
 
 // Create a joi schema for amount validation
 const AmountSchema = Joi.object({
@@ -38,13 +40,14 @@ export default function RequestWithdrawal() {
   });
   const navigate = useNavigate();
 
-
-
   const onSubmit = async (data) => {
     // Handle form submission logic here
     try {
       console.log(data);
-      const response = await fetchData({ apiFn: agentService.requestWithdrawal, formValues: data });
+      const response = await fetchData({
+        apiFn: agentService.requestWithdrawal,
+        formValues: data,
+      });
 
       if (response.success) {
         // Reset the form after successful submission
@@ -57,12 +60,12 @@ export default function RequestWithdrawal() {
 
         // redirect agent to withdrawal page
         setTimeout(() => {
-          navigate("/wallet/withdrawal-history");
+          navigate("/wallet/wallet-overview");
         }, 2000);
       }
     } catch (err) {
       console.error("Request withdrawal error:", error);
-      toast("Failed to submit withdrawal request", { variant: "destructive" }); 
+      toast("Failed to submit withdrawal request", { variant: "destructive" });
     }
   };
 
@@ -78,7 +81,7 @@ export default function RequestWithdrawal() {
           <span className="font-semibold">Total Withdrawal Amount</span>
           <div className="flex items-center gap-0.5">
             <IndianRupee size={18} />
-            <span>{user.withdrawalAmount}</span>
+            <span>{user.currentWithdrawalAmount}</span>
           </div>
         </div>
         <div className="mt-2">
@@ -103,10 +106,10 @@ export default function RequestWithdrawal() {
             className="bg-white"
             onChange={(e) => {
               if (/^[0-9]+$/.test(e.target.value)) {
-                if (e.target.value < 0) {
-                  e.target.value = 0;
+                if (e.target.value < 1) {
+                  e.target.value = 1;
                 }
-                if (e.target.value > parseInt(user.withdrawalAmount)) {
+                if (e.target.value > parseInt(user.currentWithdrawalAmount)) {
                   setExceedAmountWarn(true);
                 } else {
                   setExceedAmountWarn(false);

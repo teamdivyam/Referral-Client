@@ -82,6 +82,8 @@ const agentService = {
      * @returns {AxiosPromise}
      */
     requestWithdrawal: (data) => api.post("/agent/request-withdrawal", data),
+
+    markNotificationRead: () => api.put("/agent/mark-notification-read")
 };
 
 export default agentService;
