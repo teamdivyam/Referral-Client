@@ -25,10 +25,6 @@ import AnimateBtn from "./Buttons/AnimateBtn";
 
 export function AppSidebar({
   data,
-  currentPage,
-  subCurrentPage,
-  setCurrentPage,
-  setSubCurrentPage,
   logout,
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
@@ -39,7 +35,7 @@ export function AppSidebar({
           <h1 className="text-xl font-semibold">Divyam Pvt Ltd</h1>
         </div>
       </SidebarHeader>
-      <SidebarContent className="pt-4 gap-0">
+      <SidebarContent className="pt-4 gap-0 bg-white">
         {/* We create a collapsible SidebarGroup for each parent. */}
         {data.navMain.map((item, currentPageIndex) => (
           <Collapsible
@@ -56,13 +52,9 @@ export function AppSidebar({
                   <Link
                     to={item.url}
                     className="flex items-center gap-2"
-                    onClick={() => {
-                      setCurrentPage(currentPageIndex);
-                      setSubCurrentPage(0);
-                    }}
                   >
                     {item.icon}
-                    <p className="font-normal text-base">{item.title}</p>
+                    <p className="font-normal text-base text-gray-600 font-semibold">{item.title}</p>
                   </Link>
                   <CollapsibleTrigger>
                     <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
@@ -83,11 +75,7 @@ export function AppSidebar({
                             >
                               <Link
                                 to={item.url}
-                                onClick={() => {
-                                  setCurrentPage(currentPageIndex);
-                                  setSubCurrentPage(subCurrentPageIndex);
-                                }}
-                                className="text-base"
+                                className="text-base text-gray-500"
                               >
                                 {item.title}
                               </Link>

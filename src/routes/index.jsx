@@ -22,15 +22,14 @@ import MyReferrals from "../pages/referral/MyReferrals";
 // Settings
 import CompleteYourProfile from "../pages/settings/CompleteYourProfile";
 import YourBankDetails from "../pages/settings/YourBankDetails";
-import EditYourProfile from "../pages/settings/EditYourProfile";
 import Notifications from "../pages/settings/Notifications";
-import SecurityAndPrivacy from "../pages/settings/SecurityAndPrivacy";
-import TermAndCondition from "../pages/settings/TermAndConditions";
+import TermsAndConditions from "../pages/settings/TermAndConditions";
 // Wallet
 import WalletOverview from "../pages/wallet/WalletOverview";
 import RequestWithdraw from "../pages/wallet/RequestWithdraw";
 
 import Profile from "../pages/settings/Profile";
+import AddNewBank from "../pages/wallet/AddNewBank";
 
 function AppRoutes() {
   return (
@@ -39,7 +38,7 @@ function AppRoutes() {
         {/* Public Routes */}
         <Route element={<PublicRoute />}>
           <Route path="/" element={<Home />} />
-          <Route path="/term-and-conditions" element={<TermAndCondition />} />
+          <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         </Route>
 
         {/* Restricted public routes (redirect to dashboard if logged in) */}
@@ -76,41 +75,27 @@ function AppRoutes() {
           {/* Settings */}
           <Route
             path="/settings"
-            element={<Navigate to="/settings/edit-your-profile" replace />}
+            element={<Navigate to="/settings/profile-information" replace />}
           />
+          <Route path="/settings/profile-information" element={<Profile />} />
+          <Route path="/settings/bank-details" element={<YourBankDetails />} />
+          <Route path="/settings/notifications" element={<Notifications />} />
           <Route
             path="/settings/complete-your-profile"
             element={<CompleteYourProfile />}
           />
-          <Route
-            path="/settings/your-bank-details"
-            element={<YourBankDetails />}
-          />
-          <Route
-            path="/settings/edit-your-profile"
-            element={<EditYourProfile />}
-          />
-          <Route path="/settings/notifications" element={<Notifications />} />
-          <Route
-            path="/settings/security-and-privacy"
-            element={<SecurityAndPrivacy />}
-          />
-          <Route
-            path="/settings/term-and-conditions"
-            element={<TermAndCondition />}
-          />
-          <Route path="/settings/profile" element={<Profile />} />
 
           {/* Wallet */}
           <Route
             path="/wallet"
             element={<Navigate to="/wallet/wallet-overview" replace />}
           />
+          <Route path="/wallet/wallet-overview" element={<WalletOverview />} />
           <Route
-            path="/wallet/wallet-overview"
-            element={<WalletOverview />}
+            path="/wallet/request-withdrawal"
+            element={<RequestWithdraw />}
           />
-          <Route path="/wallet/request-withdrawal" element={<RequestWithdraw />} />
+          <Route path="/wallet/add-bank-account" element={<AddNewBank />} />
         </Route>
 
         {/* 404 route */}

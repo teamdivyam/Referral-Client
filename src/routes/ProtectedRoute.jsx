@@ -1,5 +1,5 @@
 // src/components/ProtectedRoute.jsx
-import { Link, Navigate, Outlet } from "react-router-dom";
+import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 import { AppSidebar } from "@/components/app-sidebar";
@@ -72,33 +72,28 @@ const data = {
     },
     {
       title: "Settings",
-      url: "/settings/complete-your-profile",
+      url: "/settings/profile-information",
       icon: <Settings size={18} />,
       items: [
         {
           sidebar: true,
-          title: "Complete Your Profile",
-          url: "/settings/complete-your-profile",
+          title: "Profile Information",
+          url: "/settings/profile-information",
         },
         {
           sidebar: true,
-          title: "Your Bank Details",
-          url: "/settings/your-bank-details",
-        },
-        {
-          sidebar: true,
-          title: "Notifications",
-          url: "/settings/notifications",
+          title: "Bank Details",
+          url: "/settings/bank-details",
         },
         {
           sidebar: true,
           title: "Terms & Conditions",
-          url: "/settings/terms-and-conditions",
+          url: "/terms-and-conditions",
         },
         {
           sidebar: false,
-          title: "Profile",
-          url: "/settings/profile",
+          title: "Notifications",
+          url: "/settings/notifications",
         },
       ],
     },
@@ -107,8 +102,7 @@ const data = {
 
 const ProtectedRoute = () => {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
-  const [currentPage, setCurrentPage] = useState(0);
-  const [subCurrentPage, setSubCurrentPage] = useState(0);
+  const location = useLocation();
 
   // Show loading state while checking authentication
   if (isLoading) {
@@ -125,10 +119,6 @@ const ProtectedRoute = () => {
     <SidebarProvider>
       <AppSidebar
         data={data}
-        currentPage={currentPage}
-        subCurrentPage={subCurrentPage}
-        setCurrentPage={setCurrentPage}
-        setSubCurrentPage={setSubCurrentPage}
         logout={logout}
       />
       <SidebarInset>
@@ -140,13 +130,25 @@ const ProtectedRoute = () => {
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
                   <BreadcrumbPage>
-                    {data.navMain[currentPage].title}
+                    {location.pathname
+                      .split("/")[1]
+                      .replace(
+                        /(?:^|-)([a-z])/g,
+                        (_, letter) => ` ${letter.toUpperCase()}`
+                      )
+                      .trim()}{" "}
                   </BreadcrumbPage>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
                   <BreadcrumbPage>
-                    {data.navMain[currentPage].items[subCurrentPage].title}
+                    {location.pathname.split("/") > 2 && location.pathname
+                      .split("/")[2]
+                      .replace(
+                        /(?:^|-)([a-z])/g,
+                        (_, letter) => ` ${letter.toUpperCase()}`
+                      )
+                      .trim()}
                   </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
@@ -163,15 +165,11 @@ const ProtectedRoute = () => {
                   </div>
                 )}
               </Link>
-              <ProfileDropdownMenu
-                data={data}
-                setCurrentPage={setCurrentPage}
-                setSubCurrentPage={setSubCurrentPage}
-              />
+              <ProfileDropdownMenu />
             </div>
           </div>
         </header>
-        <div className="">
+        <div className="w-full h-full bg-muted">
           <Outlet />
         </div>
       </SidebarInset>

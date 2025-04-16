@@ -10,11 +10,12 @@ import agentService  from "../../services/agent.service";
 import useAuth from "../../hooks/useAuth";
 import { BankDetailsSchema } from "../../validation/agent";
 import { Loader2 } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 
 export default function BankForm() {
   const { reFetchCurrentUser } = useAuth();
   const { fetchData, isLoading, error } = useAxiosPost();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -35,6 +36,7 @@ export default function BankForm() {
       if (response.success) {
         toast(response.message || "Bank details are added");
         await reFetchCurrentUser();
+        navigate("/wallet/wallet-overview");
       }
     } catch (err) {
       console.log("Bankform error", err); 

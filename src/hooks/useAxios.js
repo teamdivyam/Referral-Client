@@ -1,19 +1,22 @@
 import { useEffect, useState } from "react";
 
-export const useAxiosGet = (apiFn) => {
+export const useAxiosGet = (apiFn, page=undefined, payload=undefined) => {
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    console.log(page, payload);
+
     const fetchData = async () => {
       setIsLoading(true);
       setError(null);
 
       try {
-        const response = await apiFn();
+        const response = await apiFn(page, payload);
         setData(response.data);
       } catch (error) {
+        console.log(error);
         setError(error.message);
       } finally {
         setIsLoading(false);
@@ -21,7 +24,7 @@ export const useAxiosGet = (apiFn) => {
     };
 
     fetchData();
-  }, []);
+  }, [page, payload]);
 
   return { data, error, isLoading };
 };

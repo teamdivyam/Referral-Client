@@ -40,10 +40,7 @@ export function ProfileDropdownMenu({
         <DropdownMenuGroup>
           <DropdownMenuItem
             onClick={() => {
-              // Set the current page and subcurrent page index for breadcrumbs
-              setCurrentPage(3);
-              setSubCurrentPage(4);
-              navigate(data.navMain[3].items[4].url);
+              navigate("/settings/profile-information");
             }}
           >
             <User />
@@ -51,16 +48,17 @@ export function ProfileDropdownMenu({
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
-              // Set the current page and subcurrent page index for breadcrumbs
-              setCurrentPage(1);
-              setSubCurrentPage(1);
-              navigate(data.navMain[1].items[1].url);
+              navigate("/wallet/request-withdrawal");
             }}
           >
             <CreditCard />
             <span>Request Withdraw</span>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              navigate("/settings");
+            }}
+          >
             <Settings />
             <span>Settings</span>
           </DropdownMenuItem>

@@ -76,12 +76,12 @@ export default function RequestWithdrawal() {
       </h2>
       <Separator className="my-4" />
 
-      <div className="mt-6 border bg-muted/50 w-full max-w-[540px] m-auto px-2 py-3 rounded-md lg:mt-8 lg:py-4 lg:px-6">
+      <div className="mt-6 border bg-white w-full max-w-[540px] m-auto px-2 py-3 rounded-md lg:mt-8 lg:py-4 lg:px-6">
         <div className="flex w-full justify-between">
           <span className="font-semibold">Total Withdrawal Amount</span>
           <div className="flex items-center gap-0.5">
             <IndianRupee size={18} />
-            <span>{user.currentWithdrawalAmount}</span>
+            <span>{user.balance}</span>
           </div>
         </div>
         <div className="mt-2">
