@@ -30,14 +30,20 @@ import RequestWithdraw from "../pages/wallet/RequestWithdraw";
 
 import Profile from "../pages/settings/Profile";
 import AddNewBank from "../pages/wallet/AddNewBank";
+import About from "../pages/About";
+import Contact from "../pages/Contact";
+
 
 function AppRoutes() {
+
   return (
     <Router>
       <Routes>
         {/* Public Routes */}
         <Route element={<PublicRoute />}>
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         </Route>
 
