@@ -19,7 +19,7 @@ import {
   SidebarRail,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-import AnimateBtn from "./buttons/AnimateBtn";
+import AnimateBtn from "./Buttons/AnimateBtn";
 
 // This is sample data.
 
