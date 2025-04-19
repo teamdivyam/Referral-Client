@@ -4,32 +4,39 @@ import RegisterForm from "../components/forms/RegisterForm";
 import useAuth from "../hooks/useAuth";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { RegisterSchema } from "../validation/auth";
+import { registerSchema } from "../validation/auth";
 
 export default function LoginPage() {
-  const { register: reg, isLoading, error } = useAuth();
+  const { register: reg, isLoading, error, clearError } = useAuth();
   const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     mode: "onBlur",
-    resolver: joiResolver(RegisterSchema),
+    resolver: joiResolver(registerSchema),
   });
 
   const onSubmit = async (data) => {
     try {
-      await reg(data.email, data.password, data.confirmPassword);
+      const response = await reg(
+        data.email,
+        data.password,
+        data.confirmPassword
+      );
 
-      navigate("/dashboard/overview");
-    } catch (err) {
-      console.log("Register error:", err);
-      
-      toast(error || "Register failed. Please try again.");
+      if (response.data.success) {
+        return navigate("/dashboard/overview");
+      }
+    } catch (_) {
+      toast(error);
+      clearError();
     }
   };
+
+  
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
@@ -40,6 +47,7 @@ export default function LoginPage() {
           onSubmit={onSubmit}
           errors={errors}
           isLoading={isLoading}
+          isSubmitting={isSubmitting}
         />
       </div>
     </div>

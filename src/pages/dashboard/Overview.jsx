@@ -7,27 +7,21 @@ import {
   XCircle,
   IndianRupee,
   ChartNoAxesCombined,
-  ClockArrowUp,
   ReceiptIndianRupee,
 } from "lucide-react";
 import { toast } from "sonner";
 import { RWebShare } from "react-web-share";
-import getGreetingTime from "../../lib/greetingTime";
 import Loading from "@/components/loading";
 
 import copy from "copy-to-clipboard";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { useAxiosGet } from "../../hooks/useAxios";
 import agentService from "../../services/agent.service";
 import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -87,22 +81,22 @@ export default function Overview() {
     {
       title: "Total Earnings",
       value: user.totalEarningAmount,
-      icon: <ChartNoAxesCombined size={28} color="red"/>,
+      icon: <ChartNoAxesCombined size={28} color="red" />,
     },
     {
       title: "Pending Withdrawal",
       value: user.pendingWithdrawalAmount,
-      icon: <ReceiptIndianRupee size={28} color="green"/>,
+      icon: <ReceiptIndianRupee size={28} color="green" />,
     },
     {
       title: "Balance",
       value: user.balance,
-      icon: <IndianRupee size={28} color="blue"/>,
+      icon: <IndianRupee size={28} color="blue" />,
     },
     {
       title: "Pending Balance",
       value: user.pendingBalance,
-      icon: <ChartNoAxesCombined size={28} color="brown"/>,
+      icon: <ChartNoAxesCombined size={28} color="brown" />,
     },
   ];
 

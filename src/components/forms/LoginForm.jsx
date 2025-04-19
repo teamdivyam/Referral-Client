@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 
 export default function LoginForm({
   className,
@@ -12,6 +13,7 @@ export default function LoginForm({
   onSubmit,
   errors,
   isLoading,
+  isSubmitting
 }) {
   return (
     <div className={cn("flex flex-col gap-6", className)}>
@@ -77,10 +79,10 @@ export default function LoginForm({
                 className="flex gap-0.5"
                 disabled={isLoading}
               >
-                {isLoading ? (
+                {isLoading || isSubmitting ? (
                   <>
                     <Loader2 className="animate-spin" />
-                    <span>Please Wait</span>
+                    <span>Logging</span>
                   </>
                 ) : (
                   <>Login</>

@@ -106,7 +106,7 @@ export default function Wallet() {
               <div className="text-right">Action</div>
             </div>
             {user.bankAccounts.map((acc, index) => (
-              <div className="grid grid-cols-4 text-sm text-slate-800 md:text-base">
+              <div key={index} className="grid grid-cols-4 text-sm text-slate-800 md:text-base">
                 <div className="flex gap-2  items-center col-span-2">
                   <span>{acc.bankName}</span>
                   {acc.isPrimary && <Badge className="bg-green-400">P</Badge>}

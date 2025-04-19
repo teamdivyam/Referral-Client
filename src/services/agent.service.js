@@ -2,6 +2,7 @@ import api from "../config/axios";
 
 const API_PATHS = {
   ME: "/agent/me",
+  NOTIFICATIONS: "/agent/notifications",
   UPDATE_PROFILE: "/agent/update-profile",
   ADD_BANK_DETAILS: "/agent/add-bank-details",
   OVERVIEW: "/agent/dashboard",
@@ -17,6 +18,11 @@ const agentService = {
    * @returns {AxiosPromise}
    */
   getMe: () => api.get(API_PATHS.ME),
+
+
+  getNotifications: (page) => api.get(API_PATHS.NOTIFICATIONS, {
+    params: { page },
+  }),
 
   /**
    *

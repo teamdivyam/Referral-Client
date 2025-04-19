@@ -142,7 +142,7 @@ const ProtectedRoute = () => {
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
                   <BreadcrumbPage>
-                    {location.pathname.split("/") > 2 && location.pathname
+                    {location.pathname.split("/").length > 2 && location.pathname
                       .split("/")[2]
                       .replace(
                         /(?:^|-)([a-z])/g,

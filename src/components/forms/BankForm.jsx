@@ -3,45 +3,56 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import { useAxiosPost } from "../../hooks/useAxios";
+import { useFetchPost } from "../../hooks/useAxios";
 import { toast } from "sonner";
 
-import agentService  from "../../services/agent.service";
+import agentService from "../../services/agent.service";
 import useAuth from "../../hooks/useAuth";
-import { BankDetailsSchema } from "../../validation/agent";
+import { bankSchema } from "../../validation/agent";
 import { Loader2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 export default function BankForm() {
   const { reFetchCurrentUser } = useAuth();
-  const { fetchData, isLoading, error } = useAxiosPost();
-  const navigate = useNavigate();
+  const { fetchPostData, error } = useFetchPost(
+    agentService.addBankDetails
+  );
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
+    reset,
   } = useForm({
+    resolver: joiResolver(bankSchema),
     mode: "onBlur",
-    resolver: joiResolver(BankDetailsSchema),
+    shouldFocuseError: true,
+    delayError: 300,
+    defaultValues: {
+      bankName: "",
+      accountHolderName: "",
+      accountNumber: "",
+      ifscCode: "",
+    },
   });
 
   const onSubmit = async (formValues) => {
     try {
-      const response = await fetchData({
-        apiFn: agentService.addBankDetails,
-        formValues,
-      });
+      const response = await fetchPostData(formValues);
 
-      if (response.success) {
-        toast(response.message || "Bank details are added");
+      if (response.data.success) {
+        toast(response.data.message || "Profile updated successfully");
         await reFetchCurrentUser();
-        navigate("/wallet/wallet-overview");
       }
-    } catch (err) {
-      console.log("Bankform error", err); 
-      toast(error || "Add bank details is failed. Please try again.");
+    } catch (_) {
+      toast(error || "Error in updating profile! Try agin later.");
+    } finally {
+      reset();
     }
+  };
+
+  // Format IFSC code to uppercase
+  const formatIFSC = (e) => {
+    e.target.value = e.target.value.toUpperCase();
   };
 
   return (
@@ -55,12 +66,7 @@ export default function BankForm() {
         </h1>
         <div className="grid gap-2">
           <Label htmlFor="bankName">Bank Name</Label>
-          <Input
-            {...register("bankName", { required: true })}
-            type="text"
-            id="bankName"
-            autoComplete="true"
-          />
+          <Input id="bankName" {...register("bankName", { required: true })} />
           <div className="h-2">
             <p className="text-red-400 text-sm">
               {errors.bankName && errors.bankName.message}
@@ -70,10 +76,8 @@ export default function BankForm() {
         <div className="grid gap-2">
           <Label htmlFor="accountHolderName">Account Holder Name</Label>
           <Input
-            {...register("accountHolderName", { required: true })}
-            type="text"
             id="accountHolderName"
-            autoComplete="true"
+            {...register("accountHolderName", { required: true })}
           />
           <div className="h-2">
             <p className="text-red-400 text-sm">
@@ -84,10 +88,8 @@ export default function BankForm() {
         <div className="grid gap-2">
           <Label htmlFor="accountNumber">Account Number</Label>
           <Input
-            {...register("accountNumber", { required: true })}
-            type="text"
             id="accountNumber"
-            autoComplete="true"
+            {...register("accountNumber", { required: true })}
           />
           <div className="h-2">
             <p className="text-red-400 text-sm">
@@ -98,10 +100,9 @@ export default function BankForm() {
         <div className="grid gap-2">
           <Label htmlFor="ifscCode">IFSC Code</Label>
           <Input
-            {...register("ifscCode", { required: true })}
-            type="text"
             id="ifscCode"
-            autoComplete="true"
+            {...register("ifscCode", { required: true })}
+            onInput={formatIFSC}
           />
           <div className="h-2">
             <p className="text-red-400 text-sm">
@@ -109,13 +110,12 @@ export default function BankForm() {
             </p>
           </div>
         </div>
-        
 
-        <Button type="submit" className="flex gap-0.5" disabled={isLoading}>
-          {isLoading ? (
+        <Button type="submit" className="flex gap-0.5" disabled={isSubmitting}>
+          {isSubmitting ? (
             <>
               <Loader2 className="animate-spin" />
-              <span>Please Wait</span>
+              <span>Updating...</span>
             </>
           ) : (
             <>Submit</>

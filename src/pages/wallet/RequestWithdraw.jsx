@@ -1,72 +1,56 @@
-import Joi from "joi";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { joiResolver } from "@hookform/resolvers/joi";
 
 import useAuth from "../../hooks/useAuth";
 import agentService from "../../services/agent.service";
-import { useAxiosPost } from "../../hooks/useAxios";
+import { useFetchPost } from "../../hooks/useAxios";
 
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { IndianRupee } from "lucide-react";
-
-// Create a joi schema for amount validation
-const AmountSchema = Joi.object({
-  amount: Joi.number().required().messages({
-    "number.base": "Amount must be a number",
-    "number.empty": "Amount is required",
-    "any.required": "Amount is required",
-  }),
-});
+import { requestAmountSchema } from "../../validation/agent";
 
 export default function RequestWithdrawal() {
-  const { user } = useAuth();
+  const { user, reFetchCurrentUser } = useAuth();
   const [exceedAmountWarn, setExceedAmountWarn] = useState(false);
-  const { fetchData, isLoading, error } = useAxiosPost();
+  const { error, loading, fetchPostData } = useFetchPost(
+    agentService.requestWithdrawal
+  );
 
   const {
-    setValue,
-    formState: { errors },
     handleSubmit,
     register,
     reset,
+    formState: { errors, isSubmitting },
   } = useForm({
-    resolver: joiResolver(AmountSchema),
+    mode: "onBlur",
+    resolver: joiResolver(requestAmountSchema),
   });
-  const navigate = useNavigate();
 
-  const onSubmit = async (data) => {
-    // Handle form submission logic here
+  const onSubmit = async (formValues) => {
     try {
-      console.log(data);
-      const response = await fetchData({
-        apiFn: agentService.requestWithdrawal,
-        formValues: data,
-      });
+      const response = await fetchPostData(formValues);
 
-      if (response.success) {
-        // Reset the form after successful submission
-        reset();
-        setExceedAmountWarn(false);
-
-        toast("Withdrawal request submitted successfully", {
-          variant: "success",
-        });
-
-        // redirect agent to withdrawal page
-        setTimeout(() => {
-          navigate("/wallet/wallet-overview");
-        }, 2000);
+      if (response.data.success) {
+        toast(response.data.message || "Withdrawal request has been created.");
+        await reFetchCurrentUser();
       }
-    } catch (err) {
-      console.error("Request withdrawal error:", error);
-      toast("Failed to submit withdrawal request", { variant: "destructive" });
+    } catch (_) {
+      toast(error || "Error in creating withdrawal request! Try agin later.", {
+        variant: "destructive",
+      });
+    } finally {
+      reset();
     }
+  };
+
+  const formatNumber = (e) => {
+    const input = e.target.value.replace(/\D|\b0/g, "");
+    e.target.value = input;
   };
 
   return (
@@ -98,36 +82,33 @@ export default function RequestWithdrawal() {
             Amount
           </Label>
           <Input
-            {...register("amount", {
-              required: true,
-            })}
             id="name"
-            type="number"
             className="bg-white"
+            {...register("amount")}
+            onInput={formatNumber}
             onChange={(e) => {
-              if (/^[0-9]+$/.test(e.target.value)) {
-                if (e.target.value < 1) {
-                  e.target.value = 1;
-                }
-                if (e.target.value > parseInt(user.currentWithdrawalAmount)) {
-                  setExceedAmountWarn(true);
-                } else {
-                  setExceedAmountWarn(false);
-                }
-              } else {
-                setValue("amount", e.target.value.replace(/[^0-9]/g, ""));
+              if (parseInt(e.target.value) > user.balance) {
+                return setExceedAmountWarn(true);
               }
+              setExceedAmountWarn(false);
             }}
           />
-          <div>
+          <div className="flex flex-col">
             {exceedAmountWarn && (
               <p className="text-sm text-red-400">
                 Amount exceeded current withdrawal amount.
               </p>
             )}
+            {errors.amount && (
+              <p className="text-sm text-red-600">{errors.amount.message}</p>
+            )}
           </div>
-          <Button className="w-40" disabled={exceedAmountWarn || isLoading}>
-            Request
+          <Button
+            type="submit"
+            className="w-40"
+            disabled={exceedAmountWarn || loading || isSubmitting}
+          >
+            {loading || isSubmitting ? "Requesting..." : "Request"}
           </Button>
         </form>
       </div>

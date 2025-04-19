@@ -15,9 +15,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import useAuth from "../../hooks/useAuth";
+import { Navigate } from "react-router-dom";
 
 export default function Profile() {
   const { user } = useAuth();
+
+  if (!user.userProfileCompleteStatus.profile) {
+    return <Navigate to="/settings/complete-your-profile" />;
+  }
 
   return (
     <div className="px-4 py-6 lg:px-6 lg:py-8">

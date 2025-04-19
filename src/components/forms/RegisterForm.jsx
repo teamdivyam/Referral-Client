@@ -4,6 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
+import { securityValidations } from "../../validation/auth";
+import { Loader2 } from "lucide-react";
 
 export default function RegisterForm({
   className,
@@ -12,6 +14,8 @@ export default function RegisterForm({
   onSubmit,
   errors,
   isLoading,
+  isSubmitting
+
 }) {
   return (
     <div className={cn("flex flex-col gap-6", className)}>
@@ -33,31 +37,49 @@ export default function RegisterForm({
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
-                  {...register("email", { required: true })}
-                  type="email"
                   id="email"
-                  autoComplete="true"
+                  type="email"
+                  {...register("email")}
+                  placeholder="your@email.com"
                 />
-                <div className="h-2">
-                  <p className="text-red-400 text-sm">
-                    {errors.email && errors.email.message}
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.email.message}
                   </p>
-                </div>
+                )}
               </div>
 
               {/* Password */}
               <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
                 <Input
-                  {...register("password", { required: true })}
-                  type="password"
                   id="password"
-                  autoComplete="true"
+                  type="password"
+                  {...register("password", {
+                    validate: {
+                      common: (v) => securityValidations.commonPasswords(v),
+                      sequentials: (v) =>
+                        securityValidations.sequentialChars(v),
+                      emailInPassword: (v, { req }) =>
+                        securityValidations.emailInPassword(v, { req }),
+                    },
+                  })}
+                  placeholder="********"
                 />
-                <div className="h-2">
-                  <p className="text-red-400 text-sm">
-                    {errors.password && errors.password.message}
+                {errors.password && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.password.message}
                   </p>
+                )}
+                <div className="mt-2 text-xs text-gray-500">
+                  <p>Password must contain:</p>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li>At least 8 characters</li>
+                    <li>One uppercase letter</li>
+                    <li>One lowercase letter</li>
+                    <li>One number</li>
+                    <li>One special character</li>
+                  </ul>
                 </div>
               </div>
 
@@ -69,11 +91,11 @@ export default function RegisterForm({
                   type="password"
                   id="confirmPassword"
                 />
-                <div className="h-2">
-                  <p className="text-red-400 text-sm">
-                    {errors.confirmPassword && errors.confirmPassword.message}
+                {errors.confirmPassword && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.confirmPassword.message}
                   </p>
-                </div>
+                )}
               </div>
 
               <Button
@@ -81,13 +103,13 @@ export default function RegisterForm({
                 className="flex gap-0.5"
                 disabled={isLoading}
               >
-                {isLoading ? (
+                {isLoading || isSubmitting? (
                   <>
                     <Loader2 className="animate-spin" />
-                    <span>Please Wait</span>
+                    <span>Creating Account</span>
                   </>
                 ) : (
-                  <>Submit</>
+                  <>Create Account</>
                 )}
               </Button>
 
@@ -97,7 +119,6 @@ export default function RegisterForm({
                   Login
                 </Link>
               </div>
-
             </div>
           </form>
 
@@ -109,7 +130,6 @@ export default function RegisterForm({
               className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
             />
           </div>
-
         </CardContent>
       </Card>
 
@@ -117,7 +137,6 @@ export default function RegisterForm({
         By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
         and <a href="#">Privacy Policy</a>.
       </div>
-      
     </div>
   );
 }

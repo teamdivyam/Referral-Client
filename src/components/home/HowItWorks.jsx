@@ -21,7 +21,7 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section className="py-16 px-6 bg-gray-50">
+    <section id="howitworks" className="py-16 px-6 bg-gray-50">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
 

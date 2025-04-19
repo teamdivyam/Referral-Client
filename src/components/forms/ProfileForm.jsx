@@ -1,44 +1,106 @@
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import { joiResolver } from "@hookform/resolvers/joi";
-import { useAxiosPost } from "../../hooks/useAxios";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import agentService from "../../services/agent.service";
 import useAuth from "../../hooks/useAuth";
-import { ProfileSchema } from "../../validation/agent";
-import { Loader2 } from "lucide-react";
+
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { joiResolver } from "@hookform/resolvers/joi";
+import { useFetchPost } from "../../hooks/useAxios";
+import { profileSchema } from "../../validation/agent";
+import { useState } from "react";
+
+const states = [
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
+];
 
 export default function ProfileForm() {
+  const [disabled, setDisabled] = useState(false);
   const { reFetchCurrentUser } = useAuth();
-  const { fetchData, isLoading, error } = useAxiosPost();
+  const { fetchPostData, error, loading } = useFetchPost(
+    agentService.updateProfile
+  );
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     setValue,
+    reset,
   } = useForm({
+    resolver: joiResolver(profileSchema),
     mode: "onBlur",
-    resolver: joiResolver(ProfileSchema),
+    shouldFocuseError: true,
+    delayError: 300,
+    disabled,
+    defaultValues: {
+      name: "",
+      addressLine1: "",
+      addressLine2: "",
+      city: "",
+      state: ""
+    },
   });
 
   const onSubmit = async (formValues) => {
+    setDisabled(true);
+
     try {
-      const response = await fetchData({
-        apiFn: agentService.updateProfile,
-        formValues,
-      });
-      if (response.success) {
-        toast(response.message || "Profile updated successfully.");
+      const response = await fetchPostData(formValues);
+
+      if (response.data.success) {
+        toast(response.data.message || "Profile updated successfully");
         await reFetchCurrentUser();
       }
-    } catch (err) {
-      console.log(err);
-      toast(error || "Update failed. Please try again.");
+    } catch (_) {
+      console.log(_);
+      toast(error || "Error in updating profile! Try agin later.");
+    } finally {
+      reset();
+      setDisabled(false);
     }
+  };
+
+  const formatPhoneNumber = (e) => {
+    const input = e.target.value.replace(/\D/g, "").substring(0, 10);
+    e.target.value = input;
   };
 
   return (
@@ -54,119 +116,99 @@ export default function ProfileForm() {
         {/* Name */}
         <div className="grid gap-2">
           <Label htmlFor="name">Name</Label>
-          <Input
-            {...register("name", { required: true })}
-            type="text"
-            id="name"
-            autoComplete="true"
-          />
-          <div className="h-2">
-            <p className="text-red-400 text-sm">
-              {errors.name && errors.name.message}
-            </p>
-          </div>
+          <Input id="name" {...register("name")} className="bg-muted" />
+          {errors.name && (
+            <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+          )}
         </div>
 
         {/* Phone Number */}
         <div className="grid gap-2">
           <Label htmlFor="phoneNumber">Phone Number</Label>
           <Input
-            {...register("phoneNumber", { required: true })}
-            type="text"
             id="phoneNumber"
-            autoComplete="true"
-            onChange={(e) => {
-              /**
-               * Checking if input values are numbers
-               * value should not exceed 10 numeric character
-               */
-              if (/^[0-9]+$/.test(e.target.value)) {
-                if (e.target.value.length < 10) {
-                  setValue("phoneNumber", e.target.value);
-                } else {
-                  setValue("phoneNumber", e.target.value.slice(0, 10));
-                }
-              } else {
-                setValue("phoneNumber", e.target.value.replace(/[^0-9]/g, ""));
-              }
-            }}
+            className="bg-muted"
+            {...register("phoneNumber")}
+            onInput={formatPhoneNumber}
+            maxLength={10}
           />
-          <div className="h-2">
-            <p className="text-red-400 text-sm">
-              {errors.phoneNumber && errors.phoneNumber.message}
+          {errors.phoneNumber && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.phoneNumber.message}
             </p>
-          </div>
+          )}
         </div>
 
         {/* Address Line 1 */}
         <div className="grid gap-2">
           <Label htmlFor="addressLine1">Address Line 1</Label>
           <Input
-            {...register("addressLine1", { required: true })}
-            type="text"
             id="addressLine1"
-            autoComplete="true"
+            className="bg-muted"
+            {...register("addressLine1", { required: true })}
           />
-          <div className="h-2">
-            <p className="text-red-400 text-sm">
-              {errors.addressLine1 && errors.addressLine1.message}
+          {errors.addressLine1 && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.addressLine1.message}
             </p>
-          </div>
+          )}
         </div>
 
         {/* Address Line 2 */}
         <div className="grid gap-2">
           <Label htmlFor="addressLine2">Address Line 2</Label>
           <Input
-            {...register("addressLine2", { required: true })}
-            type="text"
             id="addressLine2"
-            autoComplete="true"
+            className="bg-muted"
+            {...register("addressLine2", { required: true })}
           />
-          <div className="h-2">
-            <p className="text-red-400 text-sm">
-              {errors.addressLine2 && errors.addressLine2.message}
+          {errors.addressLine2 && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.addressLine2.message}
             </p>
-          </div>
+          )}
         </div>
 
         {/* City */}
         <div className="grid gap-2">
           <Label htmlFor="city">City</Label>
           <Input
-            {...register("city", { required: true })}
-            type="text"
             id="city"
-            autoComplete="true"
+            className="bg-muted"
+            {...register("city", { required: true })}
           />
-          <div className="h-2">
-            <p className="text-red-400 text-sm">
-              {errors.city && errors.city.message}
-            </p>
-          </div>
+          {errors.city && (
+            <p className="mt-1 text-sm text-red-600">{errors.city.message}</p>
+          )}
         </div>
 
         {/* State */}
         <div className="grid gap-2">
           <Label htmlFor="state">State</Label>
-          <Input
-            {...register("state", { required: true })}
-            type="text"
-            id="state"
-            autoComplete="true"
-          />
-          <div className="h-2">
-            <p className="text-red-400 text-sm">
-              {errors.state && errors.state.message}
-            </p>
-          </div>
+          <Select
+            onValueChange={(value) => setValue("state", value)} // Set value using setValue
+          >
+            <SelectTrigger className="w-full bg-muted">
+              <SelectValue placeholder="Select state" />
+            </SelectTrigger>
+            <SelectContent>
+              {states.map((state) => (
+                <SelectItem key={state} value={state}>
+                  {state}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {errors.state && (
+            <p className="mt-1 text-sm text-red-600">{errors.state.message}</p>
+          )}
         </div>
 
-        <Button type="submit" className="flex gap-0.5" disabled={isLoading}>
-          {isLoading ? (
+        <Button type="submit" className="flex gap-0.5" disabled={loading}>
+          {loading || isSubmitting ? (
             <>
               <Loader2 className="animate-spin" />
-              <span>Please Wait</span>
+              <span>Updating...</span>
             </>
           ) : (
             <>Submit</>

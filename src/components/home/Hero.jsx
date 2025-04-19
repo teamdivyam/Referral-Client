@@ -1,8 +1,6 @@
-import { useNavigate } from "react-router-dom";
-import { Button } from "../ui/button";
+import { Link } from "react-router-dom";
 
 export default function Hero() {
-  const navigate = useNavigate();
   return (
     <section
       className="bg-gradient-to-r from-blue-500 to-indigo-500
@@ -17,21 +15,12 @@ export default function Hero() {
           purchases. Join thousands of agents already earning passive income.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Button
-            variant="secondary"
-            className="px-8 py-6 text-lg"
-            onClick={() => {
-              navigate("/register");
-            }}
-          >
+          <Link to="/register" className="bg-white px-8 py-4 text-lg text-black font-medium rounded-md">
             Get Started
-          </Button>
-          <Button
-            className="px-8 py-6 text-lg"
-            // onClick={() => navigate("#howitworks")}
-          >
+          </Link>
+          <a href="#howitworks" className="bg-black px-8 py-4 text-lg font-medium rounded-md">
             Learn How It Works
-          </Button>
+          </a>
         </div>
       </div>
     </section>

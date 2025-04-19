@@ -6,9 +6,11 @@ import useAuth from "../../hooks/useAuth";
 export default function CompleteYourProfile() {
   const { user } = useAuth();
 
+  // Todo: change axios hook for profile and bank
+
   return (
     <div className="flex px-4 py-12 justify-center items-center">
-      <div className="w-full max-w-lg px-3 py-2.5 border rounded-lg shadow-md">   
+      <div className="w-full max-w-lg px-3 py-2.5 bg-white border rounded-lg shadow-md">   
         {/* Render Profile form only if profile is not completed */}
         { !user.userProfileCompleteStatus.profile && <ProfileForm /> }   
           {/* Render Bank form only if profile is completed and Bank is not */}

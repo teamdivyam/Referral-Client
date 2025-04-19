@@ -88,7 +88,6 @@ export const AuthProvider = ({ children }) => {
               const response = await agentService.getMe();
               console.log("User:", response.data.user);
               setUser(response.data.user);
-
             }
           } catch (error) {
             console.log("Check Auth Status Error:", error);
@@ -110,46 +109,49 @@ export const AuthProvider = ({ children }) => {
       setError(null);
 
       // The server will set HTTP-only cookies for access and refresh tokens
-      await authService.login(email, password);
+      const loginResponse = await authService.login(email, password);
 
-      // After successful login, fetch user data
-      const response = await agentService.getMe();
-      setUser(response.data.user);
+      if (loginResponse.data.success) {
+        const response = await agentService.getMe();
+        setUser(response.data.user);
+      }
 
-    } catch (error) {
+      return loginResponse;
+    } catch (errorResponse) {
       setError(
-        error.response.data.error.message || "Login failed. Please try again."
+        errorResponse.response.data.error.message ||
+          "Login failed. Please try again."
       );
-      throw error;
+      throw errorResponse;
     } finally {
       setIsLoading(false);
     }
   };
 
-  const register = async (
-    email,
-    password,
-    confirmPassword
-  ) => {
+  const register = async (email, password, confirmPassword) => {
     try {
       setIsLoading(true);
       setError(null);
 
       // The server will set HTTP-only cookies for access and refresh tokens
-      await authService.register(
+      const registerResponse = await authService.register(
         email,
         password,
         confirmPassword
       );
 
-      // After successful registration, fetch user data
-      const response = await agentService.getMe();
-      setUser(response.data.user);
+      if (registerResponse.data.success) {
+        const response = await agentService.getMe();
+        setUser(response.data.user);
+      }
 
-    } catch (error) {
+      return registerResponse;
+    } catch (errorResponse) {
       setError(
-        error.response.data.message || "Registration failed. Please try again."
+        errorResponse.response.data.error.message ||
+          "Registration failed. Please try again."
       );
+      throw errorResponse;
     } finally {
       setIsLoading(false);
     }
@@ -181,7 +183,7 @@ export const AuthProvider = ({ children }) => {
       console.log("Refetch Current User Error:", error);
       setUser(null);
     }
-  }
+  };
 
   const clearError = () => {
     setError(null);
