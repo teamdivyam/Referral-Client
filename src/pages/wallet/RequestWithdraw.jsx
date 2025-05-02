@@ -74,43 +74,47 @@ export default function RequestWithdrawal() {
           </p>
         </div>
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="grid mt-6 items-center gap-4"
-        >
-          <Label htmlFor="name" className="text-right">
-            Amount
-          </Label>
-          <Input
-            id="name"
-            className="bg-white"
-            {...register("amount")}
-            onInput={formatNumber}
-            onChange={(e) => {
-              if (parseInt(e.target.value) > user.balance) {
-                return setExceedAmountWarn(true);
-              }
-              setExceedAmountWarn(false);
-            }}
-          />
-          <div className="flex flex-col">
-            {exceedAmountWarn && (
-              <p className="text-sm text-red-400">
-                Amount exceeded current withdrawal amount.
-              </p>
-            )}
-            {errors.amount && (
-              <p className="text-sm text-red-600">{errors.amount.message}</p>
-            )}
-          </div>
-          <Button
-            type="submit"
-            className="w-40"
-            disabled={exceedAmountWarn || loading || isSubmitting}
+        {user.balance < user.MINIMUM_WITHDRAWAL_AMOUNT ? (
+          <div className="text-sm text-red-400 py-2.5">You have no minium withdrawal amount which is 5000/-</div>
+        ) : (
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="grid mt-6 items-center gap-4"
           >
-            {loading || isSubmitting ? "Requesting..." : "Request"}
-          </Button>
-        </form>
+            <Label htmlFor="name" className="text-right">
+              Amount
+            </Label>
+            <Input
+              id="name"
+              className="bg-white"
+              {...register("amount")}
+              onInput={formatNumber}
+              onChange={(e) => {
+                if (parseInt(e.target.value) > user.balance) {
+                  return setExceedAmountWarn(true);
+                }
+                setExceedAmountWarn(false);
+              }}
+            />
+            <div className="flex flex-col">
+              {exceedAmountWarn && (
+                <p className="text-sm text-red-400">
+                  Amount exceeded current withdrawal amount.
+                </p>
+              )}
+              {errors.amount && (
+                <p className="text-sm text-red-600">{errors.amount.message}</p>
+              )}
+            </div>
+            <Button
+              type="submit"
+              className="w-40"
+              disabled={exceedAmountWarn || loading || isSubmitting}
+            >
+              {loading || isSubmitting ? "Requesting..." : "Request"}
+            </Button>
+          </form>
+        )}
       </div>
     </div>
   );

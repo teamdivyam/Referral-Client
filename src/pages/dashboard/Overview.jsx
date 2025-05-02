@@ -111,7 +111,7 @@ export default function Overview() {
         user.userProfileCompleteStatus.bank
       ) && (
         <div className="flex flex-col space-x-4 space-y-1.5 px-4 py-5 bg-red-200 border-l-6 border-red-400 md:flex-row">
-          <p className="text-sm">
+          <p className="text-sm text-primary">
             Complete your profile to become a 100% verified user
           </p>
           <Link
@@ -181,6 +181,17 @@ export default function Overview() {
                   </TableHead>
                 </TableRow>
               </TableHeader>
+
+              {latestReferrals.length === 0 && (
+                <TableBody>
+                  <TableRow>
+                    <TableCell colSpan={3} className="text-center">
+                      No Recent Referrals Found
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              )}
+
               <TableBody>
                 {latestReferrals.map((referral, index) => (
                   <TableRow key={index}>
@@ -240,6 +251,17 @@ export default function Overview() {
                   </TableHead>
                 </TableRow>
               </TableHeader>
+
+              {activeReferrals.length === 0 && (
+                <TableBody>
+                  <TableRow>
+                    <TableCell colSpan={3} className="text-center">
+                      No Active Referrals Found
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              )}
+
               <TableBody>
                 {activeReferrals.map((referral, index) => (
                   <TableRow key={index}>

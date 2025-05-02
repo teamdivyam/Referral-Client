@@ -29,26 +29,37 @@ export default function PendingReferral({ data, loading }) {
       {loading ? (
         <LoadingSpinner />
       ) : (
-        <TableBody>
-          {data?.referral.pending.map((referral, index) => (
-            <TableRow key={index}>
-              <TableCell className="font-medium">
-                {referral.referralCode}
-              </TableCell>
-              <TableCell>Ravi Gupta</TableCell>
-              <TableCell>7894561338</TableCell>
-              <TableCell>
-                {moment(referral.createdAt).format("MMM Do YY")}
-              </TableCell>
-              <TableCell>
-                {moment(referral.createdAt).format("MMM Do YY")}
-              </TableCell>
-              <TableCell className="text-right">
-                {referral.rewardAmount}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
+        <>
+          {data?.referral?.pending?.length === 0 && (
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan={6} className="text-center">
+                  No Pending Referrals Found
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          )}
+          <TableBody>
+            {data?.referral.pending.map((referral, index) => (
+              <TableRow key={index}>
+                <TableCell className="font-medium">
+                  {referral.referralCode}
+                </TableCell>
+                <TableCell>Ravi Gupta</TableCell>
+                <TableCell>7894561338</TableCell>
+                <TableCell>
+                  {moment(referral.createdAt).format("MMM Do YY")}
+                </TableCell>
+                <TableCell>
+                  {moment(referral.createdAt).format("MMM Do YY")}
+                </TableCell>
+                <TableCell className="text-right">
+                  {referral.rewardAmount}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </>
       )}
     </Table>
   );

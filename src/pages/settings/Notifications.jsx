@@ -70,7 +70,7 @@ export default function Notifications() {
   };
 
   return (
-    <div className="my-8 mx-4 max-w-[520px] bg-white border rounded-md sm:mx-auto">
+    <div className="my-8 mx-4 max-w-[620px] bg-white border rounded-md sm:mx-auto">
       <div className="flex px-4 py-4 justify-between items-center border-b">
         <div className="flex flex-col">
           <h2 className="text-lg font-semibold text-slate-800">
@@ -104,7 +104,7 @@ export default function Notifications() {
               </div>
               <div className="flex flex-col gap-0.5">
                 <span className="text-sm font-medium text-slate-800">
-                  New message from admin
+                  New message from divyam
                 </span>
                 <span className="text-sm text-slate-400">
                   {notification.message}
