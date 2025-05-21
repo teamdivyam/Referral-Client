@@ -27,7 +27,7 @@ export function AppSidebar({
   data,
   logout,
   ...props
-}: React.ComponentProps<typeof Sidebar>) {
+}) {
   return (
     <Sidebar {...props}>
       <SidebarHeader className="bg-purple-600 text-white py-4">
@@ -37,7 +37,7 @@ export function AppSidebar({
       </SidebarHeader>
       <SidebarContent className="pt-4 gap-0 bg-white">
         {/* We create a collapsible SidebarGroup for each parent. */}
-        {data.navMain.map((item, currentPageIndex) => (
+        {data.navMain.map((item) => (
           <Collapsible
             key={item.title}
             title={item.title}
@@ -54,7 +54,7 @@ export function AppSidebar({
                     className="flex items-center gap-2"
                   >
                     {item.icon}
-                    <p className="font-normal text-base text-gray-600 font-semibold">{item.title}</p>
+                    <p className="text-base text-gray-600 font-semibold">{item.title}</p>
                   </Link>
                   <CollapsibleTrigger>
                     <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
@@ -65,7 +65,7 @@ export function AppSidebar({
                 <SidebarGroupContent>
                   <SidebarMenu className="gap-0">
                     {item.items.map(
-                      (item, subCurrentPageIndex) =>
+                      (item) =>
                         item.sidebar && (
                           <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton

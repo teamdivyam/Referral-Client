@@ -1,98 +1,51 @@
 import api from "../config/axios";
 
 const API_PATHS = {
-  ME: "/agent/me",
-  NOTIFICATIONS: "/agent/notifications",
-  UPDATE_PROFILE: "/agent/update-profile",
-  ADD_BANK_DETAILS: "/agent/add-bank-details",
-  OVERVIEW: "/agent/dashboard",
-  WITHDRAWAL_HISTORY: "/agent/withdrawal-history",
-  BANK_DETAILS: "/agent/bank-details",
+    ME: "/agent/me",
+    NOTIFICATIONS: "/agent/notifications",
+    UPDATE_PROFILE: "/agent/update-profile",
+    ADD_BANK_DETAILS: "/agent/add-bank-details",
+    OVERVIEW: "/agent/dashboard",
+    WITHDRAWAL_HISTORY: "/agent/withdrawal-history",
+    BANK_DETAILS: "/agent/bank-details",
+    REQUEST_WITHDRAWAL: "/agent/request-withdrawal",
+    MARK_NOTIFICATION_READ: "/agent/mark-notification-read",
+    REFERRALS: "/agent/referrals",
+    SET_PRIMARY_ACCOUNT: "/agent/set-primary-account",
 };
 
 const agentService = {
-  /**
-   *
-   * @function getCurrentUser
-   * @description Get current logged in user data
-   * @returns {AxiosPromise}
-   */
-  getMe: () => api.get(API_PATHS.ME),
+    getMe: () => api.get(API_PATHS.ME),
 
+    getNotifications: (page) =>
+        api.get(API_PATHS.NOTIFICATIONS, {
+            params: { page },
+        }),
 
-  getNotifications: (page) => api.get(API_PATHS.NOTIFICATIONS, {
-    params: { page },
-  }),
+    updateProfile: (data) => api.put(API_PATHS.UPDATE_PROFILE, data),
 
-  /**
-   *
-   * @function updateUserProfile
-   * @description Update user profile
-   * @param {Object} payload
-   * @param {string} payload.addressLine1
-   * @param {string} payload.addressLine2
-   * @param {string} payload.city
-   * @param {string} payload.state
-   * @returns {AxiosPromise}
-   */
-  updateProfile: (data) => api.put(API_PATHS.UPDATE_PROFILE, data),
+    addBankDetails: (data) => api.put(API_PATHS.ADD_BANK_DETAILS, data),
 
-  /**
-   *
-   * @function updateUserBankDetails
-   * @description Update user bank details
-   * @param {Object} options
-   * @param {Object} options.payload
-   * @param {string} options.payload.accountHolderName
-   * @param {string} options.payload.accountNumber
-   * @param {string} options.payload.bankName
-   * @param {string} options.payload.ifscCode
-   * @returns {AxiosPromise}
-   */
-  addBankDetails: (data) => api.put(API_PATHS.ADD_BANK_DETAILS, data),
+    getOverview: () => api.get(API_PATHS.OVERVIEW),
 
-  /**
-   *
-   * @function getOverview
-   * @description Get agent dashboard overview data
-   * @returns {AxiosPromise}
-   */
-  getOverview: () => api.get(API_PATHS.OVERVIEW),
+    getWithdrawalHistory: () => api.get(API_PATHS.WITHDRAWAL_HISTORY),
 
-  /**
-   *
-   * @function getWithdrawalHistory
-   * @description Get agent withdrawal history
-   * @returns {AxiosPromise}
-   */
-  getWithdrawalHistory: () => api.get(API_PATHS.WITHDRAWAL_HISTORY),
+    getBankDetails: () => api.get(API_PATHS.BANK_DETAILS),
 
-  /**
-   *
-   * @function getWithdrawalHistory
-   * @description Get agent bank details
-   * @returns {AxiosPromise}
-   */
-  getBankDetails: () => api.get(API_PATHS.BANK_DETAILS),
+    requestWithdrawal: (data) => api.post(REQUEST_WITHDRAWAL, data),
 
-  /**
-   *
-   * @function requestWithdrawal
-   * @description Request withdrawal for agent
-   * @param {Object} payload
-   * @param {string} payload.amount
-   * @returns {AxiosPromise}
-   */
-  requestWithdrawal: (data) => api.post("/agent/request-withdrawal", data),
+    markNotificationRead: () => api.put(MARK_NOTIFICATION_READ),
 
-  markNotificationRead: () => api.put("/agent/mark-notification-read"),
+    getAgentReferrals: ({
+        page = 1,
+        limit = 20,
+        referralStatusCode = "latest",
+    }) =>
+        api.get(REFERRALS, {
+            params: { page, limit, "refer-code-status": referralStatusCode },
+        }),
 
-  getAgentReferrals: ({page = 1, limit = 20,  referralStatusCode = "latest"}) =>
-    api.get("/referral/agent-referrals", {
-      params: { page, limit, "refer-code-status": referralStatusCode },
-    }),
-
-  setPrimaryAccount: (bankId) => api.put("/agent/set-primary-account", { bankId }),
+    setPrimaryAccount: (bankId) => api.put(SET_PRIMARY_ACCOUNT, { bankId }),
 };
 
 export default agentService;
