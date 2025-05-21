@@ -32,20 +32,20 @@ const agentService = {
 
     getBankDetails: () => api.get(API_PATHS.BANK_DETAILS),
 
-    requestWithdrawal: (data) => api.post(REQUEST_WITHDRAWAL, data),
+    requestWithdrawal: (data) => api.post(API_PATHS.REQUEST_WITHDRAWAL, data),
 
-    markNotificationRead: () => api.put(MARK_NOTIFICATION_READ),
+    markNotificationRead: () => api.put(API_PATHS.MARK_NOTIFICATION_READ),
 
     getAgentReferrals: ({
         page = 1,
         limit = 20,
         referralStatusCode = "latest",
     }) =>
-        api.get(REFERRALS, {
+        api.get(API_PATHS.REFERRALS, {
             params: { page, limit, "refer-code-status": referralStatusCode },
         }),
 
-    setPrimaryAccount: (bankId) => api.put(SET_PRIMARY_ACCOUNT, { bankId }),
+    setPrimaryAccount: (bankId) => api.put(API_PATHS.SET_PRIMARY_ACCOUNT, { bankId }),
 };
 
 export default agentService;
